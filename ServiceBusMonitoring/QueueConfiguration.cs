@@ -25,7 +25,7 @@ namespace ServiceBusMonitoring
             get { return String.Format("{0}_{1}", SBNamespace, QueueName); }
         }
 
-        [ConfigurationProperty("SBNamespace")]
+        [ConfigurationProperty("SBNamespace", IsRequired = true)]
         public string SBNamespace
         {
             get { return this["SBNamespace"].ToString(); }
@@ -35,7 +35,7 @@ namespace ServiceBusMonitoring
             }
         }
 
-        [ConfigurationProperty("QueueName")]
+        [ConfigurationProperty("QueueName", IsRequired = true)]
         public string QueueName
         {
             get { return this["QueueName"].ToString(); }
@@ -45,7 +45,7 @@ namespace ServiceBusMonitoring
             }
         }
 
-        [ConfigurationProperty("SASKeyName")]
+        [ConfigurationProperty("SASKeyName", IsRequired = true)]
         public string SASKeyName
         {
             get { return this["SASKeyName"].ToString(); }
@@ -55,7 +55,7 @@ namespace ServiceBusMonitoring
             }
         }
 
-        [ConfigurationProperty("SASKey")]
+        [ConfigurationProperty("SASKey", IsRequired = true)]
         public string SASKey
         {
             get { return this["SASKey"].ToString(); }
@@ -65,7 +65,7 @@ namespace ServiceBusMonitoring
             }
         }
 
-        [ConfigurationProperty("Threshold")]
+        [ConfigurationProperty("Threshold", DefaultValue = 3)]
         public int Threshold
         {
             get { return Convert.ToInt32(this["Threshold"]); }
