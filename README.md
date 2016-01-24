@@ -8,7 +8,8 @@ You need the following:
 * A SAS token with the "Management" access right
 * Credentials to an SMTP server
 
-**Using the app**
+## Using the app
+
 1. Copy the sample `App.config.sample` to `App.config`
 1. Update the values as necessary
 1. Run `ServiceBusMonitoring.exe` and check that everything is healthy (perhaps create a dummy queue, and send some sample messages to test notification)
