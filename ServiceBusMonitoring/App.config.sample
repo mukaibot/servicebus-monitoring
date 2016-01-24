@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <configSections>
+      <section name="QueueConfig" type="ServiceBusMonitoring.QueueConfig, ServiceBusMonitoring"/>
+    </configSections>
+
+    <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5"/>
+    </startup>
+    <QueueConfig>
+      <Queues>
+        <add SBNamespace="some-namespace" QueueName="queue1" SASKeyName="monitoring" SASKey="" Threshold="2" />
+        <add SBNamespace="another-namespace" QueueName="queue2" SASKeyName="monitoring" SASKey="" Threshold="3" />
+      </Queues>
+    </QueueConfig>
+</configuration>
