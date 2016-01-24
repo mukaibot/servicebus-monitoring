@@ -10,8 +10,9 @@ You need the following:
 
 ## Using the app
 
-1. Copy the sample `App.config.sample` to `App.config`
-1. Update the values as necessary
+1. If you're building from source, copy the sample `App.config.sample` to `App.config`
+1. If you're using the MSI, copy `ServiceBusMonitoring.exe.config.sample` to `ServiceBusMonitoring.exe.config`
+1. Update the values in the configuration file as necessary
 1. Run `ServiceBusMonitoring.exe` and check that everything is healthy (perhaps create a dummy queue, and send some sample messages to test notification)
 1. Use Task Scheduler or similar to run this on a regular basis
 
