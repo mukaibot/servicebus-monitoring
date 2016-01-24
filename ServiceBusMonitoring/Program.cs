@@ -1,26 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using ServiceBusMonitoring.Alerters;
 
 namespace ServiceBusMonitoring
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             QueueConfig queueConfigSection = ConfigurationManager.GetSection("QueueConfig") as QueueConfig;
+            int failCount = 0;
             var queueConfig = queueConfigSection.QueueConfiguration;
-            foreach(QueueConfiguration queue in queueConfig)
+            foreach (QueueConfiguration queue in queueConfig)
             {
+                Console.WriteLine("OK: Trying to get message count from {0} in ServiceBus namespace {1}", queue.QueueName, queue.SBNamespace);
                 var threshold = queue.Threshold;
                 var counter = new SBMessageCounter(queue.SBNamespace, queue.QueueName, queue.SASKeyName, queue.SASKey);
-                Console.WriteLine("MessageCount for Queue {0} is {1}, threshold {2}", queue.QueueName, counter.MessageCount, threshold);
+                if (counter.MessageCount <= threshold)
+                {
+                    Console.WriteLine("OK: MessageCount for Queue {0} is {1}, threshold {2}", queue.QueueName, counter.MessageCount, threshold);
+                }
+                else
+                {
+                    failCount += 1;
+                    var alerterTypeFromConfig = ConfigurationManager.AppSettings["AlerterType"].ToString() ?? "null";
+                    Console.WriteLine("FAIL: MessageCount for Queue {0} is {1}, threshold {2}. Sending alert via {3}", queue.QueueName, counter.MessageCount, threshold, alerterTypeFromConfig);
+                    if (alerterTypeFromConfig != "null")
+                    {
+                        SendAlert(queue, counter, alerterTypeFromConfig);
+                    }
+                }
             }
-            Console.WriteLine("Press a key to exit");
-            Console.ReadKey();
+
+            if(failCount != 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        private static void SendAlert(QueueConfiguration queue, SBMessageCounter counter, string alerterTypeFromConfig)
+        {
+            Type alerterType = Type.GetType(String.Format("ServiceBusMonitoring.Alerters.{0}", alerterTypeFromConfig));
+            IAlerter alerter = (IAlerter)(Activator.CreateInstance(alerterType));
+            alerter.SetMessageCount(counter.MessageCount);
+            alerter.SetQueueName(queue.QueueName);
+            alerter.SetSBNamespace(queue.SBNamespace);
+            alerter.SetThreshold(queue.Threshold);
+            alerter.Send();
         }
     }
 }
