@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="ServiceBus Monitoring" Language="1033" Version="1.0.0.0" Manufacturer="Timothy Mukaibo" UpgradeCode="13b402ff-b7ba-4778-bf86-249b1af2da8e">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <Media Id="1" EmbedCab="yes" Cabinet="servicebusmonitoring.cab"/>
+    <Feature Id="ProductFeature" Title="Installer" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="ServiceBus Monitoring" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="ProductComponent" Guid="{4D2DCFA5-0C75-4915-B7FF-2788BD81FBD0}">
+        <File Source="$(var.ServiceBusMonitoring.TargetDir)\ServiceBusMonitoring.exe" KeyPath="yes" />
+        <File Source="$(var.ServiceBusMonitoring.TargetDir)\ServiceBusMonitoring.pdb" />
+        <File Source="$(var.ServiceBusMonitoring.TargetDir)\App.config.sample" Name="ServiceBusMonitoring.exe.config.sample" />
+        <File Source="$(var.ServiceBusMonitoring.TargetDir)\Microsoft.ServiceBus.dll" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>

@@ -11,7 +11,33 @@ namespace ServiceBusMonitoring
         {
             QueueConfig queueConfigSection = ConfigurationManager.GetSection("QueueConfig") as QueueConfig;
             int failCount = 0;
-            var queueConfig = queueConfigSection.QueueConfiguration;
+            QueueConfigurationCollection queueConfig = new QueueConfigurationCollection();
+
+            try
+            {
+                queueConfig = queueConfigSection.QueueConfiguration;
+            }
+            catch (NullReferenceException)
+            {
+                var configFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+                Console.WriteLine("Configuration file '{0}' not found or invalid. See https://github.com/mukaibot/servicebus-monitoring for instructions", configFile);
+                Environment.Exit(1);
+            }
+
+            failCount = ProcessQueues(failCount, queueConfig);
+
+            if (failCount != 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        private static int ProcessQueues(int failCount, QueueConfigurationCollection queueConfig)
+        {
             foreach (QueueConfiguration queue in queueConfig)
             {
                 Console.WriteLine("OK: Trying to get message count from {0} in ServiceBus namespace {1}", queue.QueueName, queue.SBNamespace);
@@ -33,14 +59,7 @@ namespace ServiceBusMonitoring
                 }
             }
 
-            if(failCount != 0)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
+            return failCount;
         }
 
         private static void SendAlert(QueueConfiguration queue, SBMessageCounter counter, string alerterTypeFromConfig)

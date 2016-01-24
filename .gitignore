@@ -1,4 +1,4 @@
 ServiceBusMonitoring/App.config
-ServiceBusMonitoring/obj/
+obj/
 ServiceBusMonitoring/packages/
-ServiceBusMonitoring/bin/
+bin/
